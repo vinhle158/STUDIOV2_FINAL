@@ -59,7 +59,7 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [studioSettings, setStudioSettings] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'pc' | 'mobile'>('pc');
-  const [isDemoActive, setIsDemoActive] = useState(() => window.location.search.includes('demo=true') || (window as any).isDemoMode === true);
+  const [isDemoActive, setIsDemoActive] = useState(() => window.location.search.includes('trailer=true'));
 
   const fetchStudioSettings = async () => {
     try {
@@ -816,9 +816,9 @@ export default function App() {
         <ProductDemoPlayer
           onClose={() => {
             setIsDemoActive(false);
-            const url = new URL(window.location.href);
-            url.searchParams.delete('demo');
-            window.history.replaceState(null, '', url.toString());
+            if (window.location.search.includes('trailer=')) {
+              window.history.pushState({}, '', window.location.pathname);
+            }
           }}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
