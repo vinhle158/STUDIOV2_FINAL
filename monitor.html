@@ -1,0 +1,255 @@
+<!-- 
+Hướng dẫn khởi động:
+Bạn chỉ cần click đúp vào file start_monitor.bat để khởi động.
+Nếu chạy thủ công qua terminal:
+1. Mở terminal tại thư mục này.
+2. Chạy lệnh: python -m http.server 8080
+3. Truy cập: http://localhost:8080/monitor.html
+-->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Monitor Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    /* Styling for parsed markdown */
+    .markdown-body h1 { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; color: #1f2937; }
+    .markdown-body h2 { font-size: 1.25rem; font-weight: bold; margin-top: 1rem; margin-bottom: 0.5rem; color: #374151; }
+    .markdown-body h3 { font-size: 1.1rem; font-weight: 600; margin-top: 0.5rem; }
+    .markdown-body ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+    .markdown-body li { margin-bottom: 0.25rem; }
+    .markdown-body p { margin-bottom: 0.75rem; }
+    .markdown-body code { background: #e5e7eb; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.9em; }
+    .markdown-body pre { background: #1f2937; color: #f9fafb; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+    .markdown-body table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    .markdown-body th, .markdown-body td { border: 1px solid #d1d5db; padding: 0.5rem; text-align: left; }
+    .markdown-body th { background-color: #f3f4f6; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 p-4 md:p-8 font-sans min-h-screen">
+
+  <div id="cors-warning" class="hidden bg-red-600 text-white p-4 rounded-lg mb-6 shadow-lg">
+    <strong>⚠️ Lỗi chạy trực tiếp!</strong> Bạn đang mở file trực tiếp qua giao thức `file://`. Trình duyệt sẽ chặn đọc file do lý do bảo mật. Vui lòng chạy file `start_monitor.bat` để khởi động qua Local Server.
+  </div>
+
+  <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-bold text-indigo-700">Studio V2 Monitor</h1>
+        <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded border border-indigo-200">Dashboard</span>
+      </div>
+      <div class="flex items-center gap-4 mt-4 md:mt-0">
+        <div class="text-sm font-medium text-gray-500">
+          Tự động tải lại sau: <span id="countdown" class="text-indigo-600 font-bold text-lg w-6 inline-block text-center">5</span>s
+        </div>
+        <select id="poll-interval" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2">
+          <option value="5">5 giây</option>
+          <option value="15">15 giây</option>
+          <option value="30">30 giây</option>
+        </select>
+        <button id="force-refresh" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+          Làm mới ngay
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Left Column: Status & Routing -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Handoff Box -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="bg-indigo-50 px-6 py-3 border-b border-indigo-100 flex items-center justify-between">
+            <h2 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
+              <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+              </span>
+              Trạng thái Bàn giao (HANDOFF)
+            </h2>
+            <span id="handoff-time" class="text-xs text-indigo-600 font-medium">Đang tải...</span>
+          </div>
+          <div id="handoff-content" class="p-6 markdown-body">Đang tải nội dung...</div>
+        </div>
+
+        <!-- Router Box -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 flex items-center justify-between">
+            <h2 class="text-lg font-bold text-gray-800">Bộ định tuyến (AGENTS.md)</h2>
+            <span id="agents-time" class="text-xs text-gray-500">Đang tải...</span>
+          </div>
+          <div id="agents-content" class="p-6 markdown-body">Đang tải nội dung...</div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Document Tree & Health -->
+      <div class="space-y-6">
+        
+        <!-- Core Docs -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+          <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Tài liệu Cốt lõi (Core Docs)</h2>
+          <div id="core-docs-list" class="space-y-3">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Modules Docs -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+          <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex justify-between">
+            <span>Tài liệu Modules</span>
+            <span class="text-xs font-normal text-gray-500">docs/MODULES/</span>
+          </h2>
+          <div id="modules-list" class="space-y-3">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="bg-gray-50 rounded-xl p-4 text-sm text-gray-600 border border-gray-200">
+          <div class="font-semibold mb-2 text-gray-700">Chú giải tình trạng:</div>
+          <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-green-500"></div> Mới cập nhật (&le; 2 ngày)</div>
+          <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded-full bg-yellow-500"></div> Hơi cũ (3-7 ngày)</div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500"></div> Nguy cơ lỗi thời (&gt; 7 ngày)</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.getElementById('cors-warning').classList.remove('hidden');
+    }
+
+    let pollInterval = 5;
+    let countdown = pollInterval;
+    let timerId = null;
+
+    const CORE_FILES = [
+      '/docs/ARCHITECTURE.md',
+      '/docs/DECISIONS.md',
+      '/docs/CONVENTIONS.md'
+    ];
+
+    function formatDate(dateStr) {
+      if (!dateStr) return 'N/A';
+      const d = new Date(dateStr);
+      return d.toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+    }
+
+    function getHealthClasses(dateStr) {
+      if (!dateStr) return 'bg-gray-100 text-gray-500 border-gray-200 ring-gray-200';
+      const diffDays = (new Date() - new Date(dateStr)) / (1000 * 60 * 60 * 24);
+      if (diffDays <= 2) return 'bg-green-50 text-green-700 border-green-200 ring-green-500';
+      if (diffDays <= 7) return 'bg-yellow-50 text-yellow-700 border-yellow-200 ring-yellow-500';
+      return 'bg-red-50 text-red-700 border-red-200 ring-red-500';
+    }
+
+    async function fetchMarkdown(path) {
+      try {
+        const res = await fetch(path, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Not found');
+        const text = await res.text();
+        const lastMod = res.headers.get('Last-Modified') ? new Date(res.headers.get('Last-Modified')).toISOString() : new Date().toISOString();
+        return { text, lastMod };
+      } catch (e) {
+        return { text: '*Lỗi đọc file. Có thể chưa được tạo.*', lastMod: null };
+      }
+    }
+
+    async function fetchModuleList() {
+      try {
+        const res = await fetch('/docs/MODULES/', { cache: 'no-store' });
+        if(!res.ok) return [];
+        const text = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        // Python server lists items as 'a' tags
+        const links = Array.from(doc.querySelectorAll('a'))
+          .map(a => a.getAttribute('href'))
+          .filter(href => href && href.endsWith('.md'));
+        return links;
+      } catch(e) {
+        return [];
+      }
+    }
+
+    function renderDocItem(name, lastMod) {
+      const classes = getHealthClasses(lastMod);
+      return `
+        <div class="flex justify-between items-center p-3 rounded-lg border ${classes} transition-all">
+          <div class="font-medium truncate mr-2" title="${name}">${name}</div>
+          <div class="text-xs font-semibold whitespace-nowrap bg-white/60 px-2 py-1 rounded">
+            ${formatDate(lastMod)}
+          </div>
+        </div>
+      `;
+    }
+
+    async function updateDashboard() {
+      // HANDOFF
+      const handoff = await fetchMarkdown('/docs/HANDOFF.md');
+      document.getElementById('handoff-content').innerHTML = marked.parse(handoff.text);
+      document.getElementById('handoff-time').innerText = 'Cập nhật: ' + formatDate(handoff.lastMod);
+
+      // AGENTS
+      const agents = await fetchMarkdown('/.agents/AGENTS.md');
+      document.getElementById('agents-content').innerHTML = marked.parse(agents.text);
+      document.getElementById('agents-time').innerText = 'Cập nhật: ' + formatDate(agents.lastMod);
+
+      // Core Docs
+      let coreHtml = '';
+      for (const path of CORE_FILES) {
+        const doc = await fetchMarkdown(path);
+        const name = path.split('/').pop();
+        coreHtml += renderDocItem(name, doc.lastMod);
+      }
+      document.getElementById('core-docs-list').innerHTML = coreHtml;
+
+      // Modules
+      const modulesHtml = [];
+      const moduleFiles = await fetchModuleList();
+      if (moduleFiles.length === 0) {
+        document.getElementById('modules-list').innerHTML = '<div class="text-sm text-gray-500 italic">Không tìm thấy module nào.</div>';
+      } else {
+        for (const file of moduleFiles) {
+          const doc = await fetchMarkdown('/docs/MODULES/' + file);
+          modulesHtml.push(renderDocItem(file, doc.lastMod));
+        }
+        document.getElementById('modules-list').innerHTML = modulesHtml.join('');
+      }
+    }
+
+    function tick() {
+      countdown--;
+      if (countdown <= 0) {
+        updateDashboard();
+        countdown = pollInterval;
+      }
+      document.getElementById('countdown').innerText = countdown;
+    }
+
+    document.getElementById('poll-interval').addEventListener('change', (e) => {
+      pollInterval = parseInt(e.target.value);
+      countdown = pollInterval;
+      document.getElementById('countdown').innerText = countdown;
+    });
+
+    document.getElementById('force-refresh').addEventListener('click', () => {
+      countdown = pollInterval;
+      updateDashboard();
+    });
+
+    // Init
+    updateDashboard();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
