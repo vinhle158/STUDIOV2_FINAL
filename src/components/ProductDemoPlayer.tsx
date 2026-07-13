@@ -1130,7 +1130,7 @@ export function ProductDemoPlayer({
             <Sparkles className="w-10 h-10 text-gold-100" />
           </div>
           <h1 className="text-4xl font-semibold tracking-[0.18em] font-display text-gold-200 italic mb-2 gold-glow-text">
-            THE WILL STUDIO
+            Studio V2
           </h1>
           <p 
             id="intro-slogan" 
@@ -1155,7 +1155,7 @@ export function ProductDemoPlayer({
           Kiến Tạo Kiệt Tác Vận Hành
         </h2>
         <p className="text-[10px] text-slate-400 uppercase tracking-[0.3em] font-bold mb-8">
-          The Will Studio Management App
+          Studio V2 Management App
         </p>
 
         <p className="text-slate-300 text-xs md:text-sm leading-relaxed max-w-md text-center mb-10 font-sans font-medium">

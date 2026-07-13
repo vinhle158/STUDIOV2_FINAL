@@ -56,7 +56,7 @@ export default function Settings({ onSettingsSaved }: SettingsProps) {
   
   // Settings Form State
   const [settings, setSettings] = useState<StudioSettings>({
-    name: 'The Will Studio',
+    name: 'Studio V2',
     phone: '',
     email: '',
     address: '',
@@ -437,7 +437,7 @@ export default function Settings({ onSettingsSaved }: SettingsProps) {
                       value={settings.name}
                       onChange={e => setSettings({ ...settings, name: e.target.value })}
                       required
-                      placeholder="Ví dụ: The Will Studio"
+                      placeholder="Ví dụ: Studio V2"
                       className="w-full text-sm border border-slate-200 rounded-xl pl-9 pr-3.5 py-2.5 focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 outline-hidden bg-slate-50/40"
                     />
                   </div>

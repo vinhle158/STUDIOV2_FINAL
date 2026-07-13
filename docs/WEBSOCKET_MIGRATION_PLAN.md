@@ -1,6 +1,6 @@
 ﻿# 📋 Kế hoạch Chuyển đổi từ Polling sang WebSocket
 
-> **Dự án:** STUDIO V2 - The Will Studio  
+> **Dự án:** STUDIO V2 - Studio V2  
 > **Ngày tạo:** 13/07/2026  
 > **Mục tiêu:** Thay thế HTTP Polling bằng WebSocket cho Chat nội bộ  
 

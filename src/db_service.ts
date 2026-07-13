@@ -369,7 +369,7 @@ export class LocalDatabase {
       const studioSettingsList = await prisma.studioSettings.findMany();
 
       const defaultStudioSettings: StudioSettings = {
-        name: "The Will Studio",
+        name: "Studio V2",
         phone: "0901 234 567",
         email: "contact@aurabridal.com",
         address: "123 Đường Ba Tháng Hai, Quận 10, TP. Hồ Chí Minh",

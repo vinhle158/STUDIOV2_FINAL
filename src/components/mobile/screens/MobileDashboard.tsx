@@ -90,7 +90,7 @@ export default function MobileDashboard({ userRole, userId, onNavigate }: Mobile
         <span className="text-[9px] uppercase font-bold text-gold-400 tracking-widest font-mono">
           {isStaff ? 'Không gian kỹ thuật' : 'Bảng điều phối chung'}
         </span>
-        <h2 className="text-base font-bold mt-1 text-slate-150">The Will Studio</h2>
+        <h2 className="text-base font-bold mt-1 text-slate-150">Studio V2</h2>
         <div className="flex items-center gap-2 mt-4 text-[10px] text-slate-300 font-semibold bg-slate-700/50 p-2.5 rounded-xl border border-slate-700 w-fit">
           <Calendar className="w-3.5 h-3.5 text-gold-400" />
           <span>Hôm nay: {new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'numeric' })}</span>

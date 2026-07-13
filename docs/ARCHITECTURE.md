@@ -1,7 +1,7 @@
 # Kiến trúc Hệ thống STUDIO V2 (Actual)
 
 ## 1. Tổng quan
-Dự án STUDIO V2 là ứng dụng web quản lý hoạt động nội bộ của The Will Studio.
+Dự án STUDIO V2 là ứng dụng web quản lý hoạt động nội bộ của Studio V2.
 Hệ thống sử dụng kiến trúc Monolithic kết hợp với React trên Frontend và Express.js trên Backend, được đóng gói để tối ưu hóa hiệu năng.
 
 ## 2. Tech Stack Chính

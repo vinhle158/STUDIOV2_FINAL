@@ -26,3 +26,7 @@
 ## Khi không chắc phạm vi
 - Hãy chủ động hỏi lại người dùng để làm rõ yêu cầu hoặc giới hạn của tác vụ thay vì tự suy đoán.
 - Hoặc, hãy đọc lướt `docs/ARCHITECTURE.md` để nắm bắt bối cảnh chung trước khi đưa ra quyết định.
+
+## Tên dự án (Quan trọng)
+- Tên duy nhất và chính thức của dự án này là **Studio V2**.
+- KHÔNG BAO GIỜ sử dụng các tên gọi cũ hoặc tự sinh như "Aura Bridal Studio" hay "The Will Studio" trong code, tài liệu, hay giao tiếp.

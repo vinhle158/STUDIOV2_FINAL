@@ -26,7 +26,7 @@ const mockDb = {
   notifications: [],
   chat_messages: [],
   studio_settings: {
-    name: "The Will Studio",
+    name: "Studio V2",
     phone: "0901 234 567",
     email: "contact@aurabridal.com",
     address: "123 Đường Ba Tháng Hai, Quận 10",

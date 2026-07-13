@@ -727,7 +727,7 @@ export default function Dashboard({ userRole, userId, onNavigate, studioSettings
         <div>
           <div className="flex items-center space-x-2.5 flex-wrap gap-y-2">
             <h2 className="text-2xl font-semibold tracking-widest text-gold-950 md:text-3xl font-display italic">
-              {studioSettings?.name || 'The Will Studio'}
+              {studioSettings?.name || 'Studio V2'}
             </h2>
             {userRole === 'admin' && (
               <span className="bg-gold-500 text-white text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-gold-600/20 shadow-3xs flex items-center shrink-0">

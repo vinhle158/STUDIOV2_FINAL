@@ -246,7 +246,7 @@ export default function App() {
       <div className="min-h-screen bg-[#faf9f6] flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gold-500"></div>
-          <p className="mt-4 text-slate-500 text-xs font-semibold uppercase tracking-widest">The Will Studio...</p>
+          <p className="mt-4 text-slate-500 text-xs font-semibold uppercase tracking-widest">Studio V2...</p>
         </div>
       </div>
     );
@@ -787,7 +787,7 @@ export default function App() {
               <LogOut className="w-3.5 h-3.5" />
               <span>Đăng xuất</span>
             </button>
-            <p className="text-[8px] text-slate-400 text-center uppercase tracking-widest font-medium">© 2026 The Will Studio</p>
+            <p className="text-[8px] text-slate-400 text-center uppercase tracking-widest font-medium">© 2026 Studio V2</p>
           </div>
         </aside>
 
