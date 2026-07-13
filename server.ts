@@ -47,6 +47,16 @@ interface AuthenticatedRequest extends Request {
 async function startServer() {
   const app = express();
   
+  if (process.env.DEMO_MODE === 'true') {
+    console.log('\n\x1b[33m========================================================\x1b[0m');
+    console.log('\x1b[33m   ⚠️  STUDIO V2 IS RUNNING IN ISOLATED DEMO MODE ⚠️   \x1b[0m');
+    console.log('\x1b[33m========================================================\x1b[0m');
+    console.log('\x1b[33m- All data is mocked and stored ONLY in memory.\x1b[0m');
+    console.log('\x1b[33m- PostgreSQL database is completely ignored.\x1b[0m');
+    console.log('\x1b[33m- Changes will be lost upon server restart.\x1b[0m');
+    console.log('\x1b[33m========================================================\n\x1b[0m');
+  }
+
   // Initialize the database connection and cache
   await LocalDatabase.initialize();
 

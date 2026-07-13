@@ -235,7 +235,7 @@ export interface DatabaseSchema {
   leads: Lead[];
 }
 
-const defaultRoles: Role[] = [
+export const defaultRoles: Role[] = [
   {
     id: 'role-admin',
     name: 'admin',
@@ -285,7 +285,7 @@ const getSeedPassword = (envName: string) => {
   return randomPass;
 };
 
-const defaultUsersFunc = (): User[] => [
+export const defaultUsersFunc = (): User[] => [
   {
     id: 'user-admin',
     full_name: 'Viet Hoang',
@@ -313,6 +313,14 @@ export class LocalDatabase {
   private static writeQueue: Promise<void> = Promise.resolve();
 
   public static async initialize() {
+    if (process.env.DEMO_MODE === 'true') {
+      console.log('--- ⚠️ RUNNING IN ISOLATED DEMO MODE ⚠️ ---');
+      console.log('Skipping PostgreSQL connection. Loading in-memory mock data...');
+      const { getDemoMockData } = await import('./demo_data');
+      this.data = getDemoMockData();
+      return;
+    }
+
     try {
       console.log('Connecting to PostgreSQL database (PostgreSQL-only Active Cache mode)...');
       await prisma.$queryRaw`SELECT 1`;
@@ -429,6 +437,10 @@ export class LocalDatabase {
   }
 
   private static async syncToPostgres(data: DatabaseSchema) {
+    if (process.env.DEMO_MODE === 'true') {
+      return; // Do nothing in demo mode, keep data isolated in memory
+    }
+
     try {
       await prisma.$transaction(async (tx) => {
         // Sync tables
