@@ -1,7 +1,16 @@
 import { DatabaseSchema, defaultRoles, defaultUsersFunc, Customer, Order, OrderStatusHistory, Task, Objective, ObjectiveKeyResult, Lead, ChatMessage } from './db_service';
 
+// Seeded Random Generator (Mulberry32) for Serverless consistency
+let seed = 12345;
+function seededRandom() {
+  let t = seed += 0x6D2B79F5;
+  t = Math.imul(t ^ t >>> 15, t | 1);
+  t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+  return ((t ^ t >>> 14) >>> 0) / 4294967296;
+}
+
 // Helper functions for random generation
-const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+const randomInt = (min: number, max: number) => Math.floor(seededRandom() * (max - min + 1)) + min;
 const randomChoice = <T>(arr: T[]): T => arr[randomInt(0, arr.length - 1)];
 
 const lastNames = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Huỳnh", "Phan", "Vũ", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ", "Ngô", "Dương", "Lý"];
