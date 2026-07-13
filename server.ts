@@ -62,6 +62,16 @@ async function startServer() {
 
   const PORT = parseInt(process.env.PORT || '3000', 10);
 
+  // Vercel Serverless Function URL patching
+  if (process.env.VERCEL) {
+    app.use((req, res, next) => {
+      if (!req.url.startsWith('/api')) {
+        req.url = '/api' + (req.url === '/' ? '' : req.url);
+      }
+      next();
+    });
+  }
+
   app.use(helmet({
     contentSecurityPolicy: process.env.NODE_ENV === 'production'
       ? {
