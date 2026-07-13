@@ -24,8 +24,23 @@ const packages = [
   { name: "Chụp kỷ yếu VIP", price: 6000000 }
 ];
 
+import bcrypt from 'bcryptjs';
+
 export const getDemoMockData = (): DatabaseSchema => {
   const users = defaultUsersFunc();
+  
+  // Add a specific user for demo mode
+  users.push({
+    id: 'user-admin-demo',
+    full_name: 'Demo Admin',
+    email: 'admin',
+    password_hash: bcrypt.hashSync('studio', 10),
+    role_id: 'role-admin',
+    is_active: true,
+    created_at: new Date().toISOString(),
+    session_version: 0
+  });
+
   
   const defaultStudioSettings = {
     name: "Studio V2",

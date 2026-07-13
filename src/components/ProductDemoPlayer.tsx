@@ -262,8 +262,8 @@ export function ProductDemoPlayer({
 
     // Focus & Highlight Email Input
     tl.to(viewport, {
-      x: () => getFocusParams('input[type="email"]', 1.35).x,
-      y: () => getFocusParams('input[type="email"]', 1.35).y,
+      x: () => getFocusParams('input[type="text"], input[type="email"]', 1.35).x,
+      y: () => getFocusParams('input[type="text"], input[type="email"]', 1.35).y,
       scale: 1.35,
       duration: 1,
       ease: 'power2.out'
@@ -271,14 +271,14 @@ export function ProductDemoPlayer({
     tl.call(() => triggerSound('click'), [], 'login+=1.7');
 
     // Type email
-    const emailStr = 'viet@studio.com';
+    const emailStr = 'admin';
     const emailObj = { charCount: 0 };
     tl.to(emailObj, {
       charCount: emailStr.length,
       duration: 1,
       ease: 'none',
       onUpdate: () => {
-        const input = document.querySelector('input[type="email"]') as HTMLInputElement;
+        const input = document.querySelector('input[type="text"], input[type="email"]') as HTMLInputElement;
         if (input) {
           const nativeSetter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), 'value')?.set;
           const val = emailStr.substring(0, Math.ceil(emailObj.charCount));
@@ -306,7 +306,7 @@ export function ProductDemoPlayer({
     tl.call(() => triggerSound('click'), [], 'login+=4');
 
     // Type password
-    const passStr = 'admin123';
+    const passStr = 'studio';
     const passObj = { charCount: 0 };
     tl.to(passObj, {
       charCount: passStr.length,
@@ -890,7 +890,7 @@ export function ProductDemoPlayer({
       // If jumping to dashboard or later and not authenticated, we quick log in first!
       if (label !== 'intro' && label !== 'login' && !isAuthenticated) {
         setStatusMessage("Đang đăng nhập nhanh...");
-        handleQuickLogin('viet@studio.com', 'admin123');
+        handleQuickLogin('admin', 'studio');
         // Wait briefly for auth then seek
         setTimeout(() => {
           tl.seek(label);

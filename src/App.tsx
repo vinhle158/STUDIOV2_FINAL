@@ -262,13 +262,20 @@ export default function App() {
             {/* Header Banner */}
             <div className="bg-gradient-to-br from-gold-50 to-gold-100/50 p-8 text-center text-slate-800 relative border-b border-gold-200/40">
               <div className="absolute top-4 right-4 bg-gold-200/30 text-gold-800 border border-gold-300/40 px-2.5 py-0.5 rounded-full text-[9px] font-bold flex items-center tracking-wider">
-                <Sparkles className="w-2.5 h-2.5 mr-1 text-gold-600 animate-pulse" /> CLOUD LOCAL
+                <Sparkles className="w-2.5 h-2.5 mr-1 text-gold-600 animate-pulse" /> {window.isDemoMode ? 'DEMO VERSION' : 'CLOUD LOCAL'}
               </div>
               <h1 className="text-3xl font-semibold tracking-widest font-display text-gold-900 italic">The Will</h1>
               <p className="text-gold-700/80 mt-1.5 text-[10px] uppercase tracking-widest font-medium">Hệ thống quản lý Studio cao cấp</p>
             </div>
 
             <div className="p-6 space-y-5">
+              {window.isDemoMode && (
+                <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-blue-800 text-[11px]">
+                  <p className="font-bold mb-1">Môi trường Demo</p>
+                  <p>Tài khoản Quản trị: <b>admin</b> / Pass: <b>studio</b></p>
+                  <p>Tài khoản Sales: <b>sale@studio.com</b> / Pass: (ngẫu nhiên ở console)</p>
+                </div>
+              )}
               {/* Normal login Form */}
               <form onSubmit={handleLogin} className="space-y-4">
                 {loginError && (
@@ -279,12 +286,12 @@ export default function App() {
                 )}
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email đăng nhập</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tên đăng nhập (Email)</label>
                   <input 
-                    type="email" 
+                    type="text" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@studio.com"
+                    placeholder={window.isDemoMode ? "Tài khoản demo: admin" : "name@studio.com"}
                     className="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-2 px-3.5 text-xs focus:outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400/20 transition-all"
                     required
                   />
@@ -688,7 +695,7 @@ export default function App() {
                 </button>
               </div>
 
-              {user?.email === 'viet@studio.com' && (
+              {(user?.email === 'viet@studio.com' || user?.email === 'admin') && (
                 <ChatWidget userName={user?.full_name} userEmail={user?.email} placement="mobile" />
               )}
 
@@ -796,7 +803,7 @@ export default function App() {
           {renderMainContent()}
         </main>
       </div>
-      {user?.email === 'viet@studio.com' && <ChatWidget userName={user?.full_name} userEmail={user?.email} />}
+      {(user?.email === 'viet@studio.com' || user?.email === 'admin') && <ChatWidget userName={user?.full_name} userEmail={user?.email} />}
       {isDemoActive && (
         <ProductDemoPlayer
           onClose={() => {

@@ -22,7 +22,7 @@ interface ChatbotApiResponse {
 }
 
 export default function ChatWidget({ userName, userEmail, placement = 'desktop' }: ChatWidgetProps) {
-  const canUseChatbot = userEmail?.toLowerCase() === 'viet@studio.com';
+  const canUseChatbot = userEmail?.toLowerCase() === 'viet@studio.com' || userEmail?.toLowerCase() === 'admin';
   const [open, setOpen] = useState(() => sessionStorage.getItem('studio_chatbot_seen') !== 'true');
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
