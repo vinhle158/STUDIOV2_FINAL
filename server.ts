@@ -3419,7 +3419,7 @@ async function startServer() {
     }
   }
 
-  if (process.env.NODE_ENV !== 'test') {
+  if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
     setTimeout(() => {
       console.log('[ANNIVERSARY] Initial scanning starting...');
       scanAndGenerateAnniversaryNotifications().catch(err => {
@@ -3434,6 +3434,10 @@ async function startServer() {
       });
     }, 12 * 60 * 60 * 1000);
   }
+  
+  if (process.env.VERCEL) {
+    return { app };
+  }
 
   const host = process.env.HOST || (fs.existsSync('/.dockerenv') ? '0.0.0.0' : '127.0.0.1');
   const server = app.listen(PORT as number, host, () => {
@@ -3442,7 +3446,7 @@ async function startServer() {
   return { app, server };
 }
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   startServer().catch(err => {
     console.error('Failed to start server:', err);
   });
