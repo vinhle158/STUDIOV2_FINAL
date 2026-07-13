@@ -1178,9 +1178,13 @@ async function startServer() {
     let dbStatus = 'online';
     let dbLatency = 0;
     try {
-      // Execute a lightweight query to test PostgreSQL connection health
-      await prisma.$queryRaw`SELECT 1`;
-      dbLatency = Date.now() - startTime;
+      if (process.env.DEMO_MODE === 'true') {
+        dbLatency = 1;
+      } else {
+        // Execute a lightweight query to test PostgreSQL connection health
+        await prisma.$queryRaw`SELECT 1`;
+        dbLatency = Date.now() - startTime;
+      }
     } catch (err) {
       if (process.env.NODE_ENV !== 'test') {
         console.error('Database health check failed:', err);
