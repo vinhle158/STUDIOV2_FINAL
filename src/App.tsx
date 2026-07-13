@@ -264,8 +264,16 @@ export default function App() {
               <div className="absolute top-4 right-4 bg-gold-200/30 text-gold-800 border border-gold-300/40 px-2.5 py-0.5 rounded-full text-[9px] font-bold flex items-center tracking-wider">
                 <Sparkles className="w-2.5 h-2.5 mr-1 text-gold-600 animate-pulse" /> {window.isDemoMode ? 'DEMO VERSION' : 'CLOUD LOCAL'}
               </div>
-              <h1 className="text-3xl font-semibold tracking-widest font-display text-gold-900 italic">The Will</h1>
-              <p className="text-gold-700/80 mt-1.5 text-[10px] uppercase tracking-widest font-medium">Hệ thống quản lý Studio cao cấp</p>
+              {window.isDemoMode ? (
+                <>
+                  <h1 className="text-3xl font-semibold tracking-widest font-display text-gold-900 italic uppercase">STUDIO DEMO</h1>
+                </>
+              ) : (
+                <>
+                  <h1 className="text-3xl font-semibold tracking-widest font-display text-gold-900 italic">The Will</h1>
+                  <p className="text-gold-700/80 mt-1.5 text-[10px] uppercase tracking-widest font-medium">Hệ thống quản lý Studio cao cấp</p>
+                </>
+              )}
             </div>
 
             <div className="p-6 space-y-5">
